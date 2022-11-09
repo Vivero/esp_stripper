@@ -64,19 +64,27 @@ void app_main(void)
 
 static void StripperTask(void* pvParameters)
 {
-    esp_stripper_init();
+    esp_stripper_init(); // Call me once, and then never again
 
-    const uint8_t stripper_index = 0;
+    const uint8_t stripper_index = 0; // Pick any number between 0-7
     esp_stripper_ctrl_config_t cfg =
     {
         .ChipType = ESP_STRIPPER_CHIP_WS2812B,
         .uGpioNum = GPIO_NUM_27,
-        .uNumPixels = 50,
+        .uNumPixels = 99, // I got 99 pixels but a snitch ain't one
     };
     esp_stripper_config_controller(stripper_index, &cfg);
     esp_stripper_clear_pixels(stripper_index);
 
-    // Light up the first 5 pixels on the strip: red, blue, green, yellow, white
+    // Pack color data into 4x 8-bit channels (Red, Green, Blue, Alpha):
+    // 0x00000000
+    //    ^ ^ ^ ^
+    //    A B G R
+    //
+    // Don't worry about channel order, `esp_stripper` will figure it out
+    // based on the above `cfg.ChipType`
+
+    // Light up the first 5 pixels on the strip: red, green, blue, yellow, white
     uint32_t my_colors[6] = {0x000000FF, 0x0000FF00, 0x00FF0000, 0x0000FFFF, 0x00FFFFFF, 0x00000000};
     esp_stripper_load_pixels(stripper_index, my_colors, 5, 0);
 
@@ -88,11 +96,12 @@ static void StripperTask(void* pvParameters)
         my_colors[5] = (uint32_t)red;
         esp_stripper_load_pixels(stripper_index, &my_colors[5], 1, 5);
 
-        // Refresh the display every 1 second
+        // Draw me like one of your French girls, every 1 second
         esp_stripper_display(); // This is a blocking call
         vTaskDelay((1000 /* msec */) / portTICK_PERIOD_MS);
     }
 
+    // Destroy me
     esp_stripper_deinit();
     vTaskDelete(NULL);
 }
