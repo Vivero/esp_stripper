@@ -1,0 +1,8 @@
+# dev environment
+.vscode
+
+# espressif dev environment
+build/
+sdkconfig.old
+
+null.d
