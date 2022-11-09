@@ -237,9 +237,6 @@ void esp_stripper_init()
         return;
     }
 
-    ESP_LOGW(TAG, "esp_stripper_controller_t=%u bytes", sizeof(esp_stripper_controller_t));
-    ESP_LOGW(TAG, "s_InternalState          =%u bytes", sizeof(esp_stripper_state_t));
-
     // Initialize the stored internal state
     s_InternalState = (esp_stripper_state_t *)calloc(1, sizeof(esp_stripper_state_t));
 
