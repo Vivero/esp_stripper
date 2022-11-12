@@ -419,10 +419,10 @@ Exit:
     return;
 }
 
-void esp_stripper_display()
+esp_stripper_err_t esp_stripper_display()
 {
-    int ret = 0; (void)ret;
-    ESP_GOTO_ON_FALSE(s_bIsInitialized, -1, Exit, TAG,
+    int ret = ESP_STRIPPER_ERR_OK;
+    ESP_GOTO_ON_FALSE(s_bIsInitialized, ESP_STRIPPER_ERR_NOT_INIT, Exit, TAG,
         "esp_stripper is not initialized");
 
     // How many controllers need to display?
@@ -474,11 +474,16 @@ void esp_stripper_display()
         {
             ESP_LOGW(TAG, "Controller %02u had tx time overrun: %u clk (max: %u)",
                 i, s_InternalState->Controllers[i].uExceededTime, s_InternalState->uMaxCyclesPerFill);
+
+            if (ret == ESP_STRIPPER_ERR_OK)
+            {
+                ret = ESP_STRIPPER_ERR_TX_OVERRUN;
+            }
         }
     }
 
  Exit:
-     return;
+     return (esp_stripper_err_t)ret;
 }
 
 #ifdef ENABLE_DEBUG_LOGGING

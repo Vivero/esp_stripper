@@ -91,6 +91,13 @@
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
+typedef enum
+{
+    ESP_STRIPPER_ERR_OK = 0,
+    ESP_STRIPPER_ERR_NOT_INIT = -1,
+    ESP_STRIPPER_ERR_TX_OVERRUN = -2,
+} esp_stripper_err_t;
+
 /// @brief The LED strip types that are supported. Each type dictates the bit
 ///        timings and color data order to be transmitted on the output pins.
 typedef enum
@@ -175,7 +182,11 @@ void esp_stripper_load_pixels(uint8_t uControllerIndex, uint32_t* pColorBufferRG
 ///         configured GPIO output pin. Nominally, up to 4 output signals
 ///         are transmitted simultaneously; this function will block untill all
 ///         configured controllers have finished transmitting their data.
-void esp_stripper_display();
+/// @return ESP_STRIPPER_ERR_OK         - data transmission completed successfully
+///         ESP_STRIPPER_ERR_NOT_INIT   - esp_stripper_init has not been called yet
+///         ESP_STRIPPER_ERR_TX_OVERRUN - one or more controllers took longer
+///                                       than expected to transmit the data
+esp_stripper_err_t esp_stripper_display();
 
 void _esp_stripper_debug_print();
 
