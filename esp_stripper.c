@@ -421,7 +421,7 @@ Exit:
 
 esp_stripper_err_t esp_stripper_display()
 {
-    int ret = ESP_STRIPPER_ERR_OK;
+    int ret = (int)ESP_STRIPPER_ERR_OK;
     ESP_GOTO_ON_FALSE(s_bIsInitialized, ESP_STRIPPER_ERR_NOT_INIT, Exit, TAG,
         "esp_stripper is not initialized");
 
@@ -437,7 +437,7 @@ esp_stripper_err_t esp_stripper_display()
     if (s_InternalState->uNumConfiguredControllers <= 0)
     {
         // Nothing ready to display, return here
-        return;
+        return ret;
     }
 
     // -- Make sure no flash operations happen right now
