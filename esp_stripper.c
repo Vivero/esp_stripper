@@ -535,9 +535,16 @@ static void set_pixel_buffer_color(esp_stripper_controller_t* pController, uint1
     if (pController->uChipType == ESP_STRIPPER_CHIP_WS2812B)
     {
         uBufIdx *= WS2812B_BYTES_PER_PIXEL;
-        pController->pPixelBuffer[uBufIdx] = (uint8_t)((colorRGBA >> 8) & 0xFF);
-        pController->pPixelBuffer[uBufIdx + 1] = (uint8_t)(colorRGBA & 0xFF);
-        pController->pPixelBuffer[uBufIdx + 2] = (uint8_t)((colorRGBA >> 16) & 0xFF);
+        pController->pPixelBuffer[uBufIdx] = (uint8_t)((colorRGBA >> 8) & 0xFF);        // Green
+        pController->pPixelBuffer[uBufIdx + 1] = (uint8_t)(colorRGBA & 0xFF);           // Red
+        pController->pPixelBuffer[uBufIdx + 2] = (uint8_t)((colorRGBA >> 16) & 0xFF);   // Blue
+    }
+    else if (pController->uChipType == ESP_STRIPPER_CHIP_WS2811)
+    {
+        uBufIdx *= WS2812B_BYTES_PER_PIXEL;
+        pController->pPixelBuffer[uBufIdx] = (uint8_t)(colorRGBA & 0xFF);               // Red
+        pController->pPixelBuffer[uBufIdx + 1] = (uint8_t)((colorRGBA >> 8) & 0xFF);    // Green
+        pController->pPixelBuffer[uBufIdx + 2] = (uint8_t)((colorRGBA >> 16) & 0xFF);   // Blue
     }
     else if (pController->uChipType == ESP_STRIPPER_CHIP_SK6812RGBW)
     {

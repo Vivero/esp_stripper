@@ -103,6 +103,7 @@ typedef enum
 typedef enum
 {
     ESP_STRIPPER_CHIP_WS2812B = 0,
+    ESP_STRIPPER_CHIP_WS2811,
     ESP_STRIPPER_CHIP_SK6812RGBW,
 } esp_stripper_chip_type_t;
 
