@@ -513,7 +513,8 @@ void _esp_stripper_debug_print()
 static size_t calculate_pixel_buffer_size(uint16_t uNumPixels, esp_stripper_chip_type_t chipType)
 {
     size_t uSizeNeeded = 0;
-    if (chipType == ESP_STRIPPER_CHIP_WS2812B)
+    if ((chipType == ESP_STRIPPER_CHIP_WS2812B) ||
+        (chipType == ESP_STRIPPER_CHIP_WS2811))
     {
         uSizeNeeded = uNumPixels * WS2812B_BYTES_PER_PIXEL;
     }
