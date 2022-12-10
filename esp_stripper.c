@@ -513,7 +513,8 @@ void _esp_stripper_debug_print()
 static size_t calculate_pixel_buffer_size(uint16_t uNumPixels, esp_stripper_chip_type_t chipType)
 {
     size_t uSizeNeeded = 0;
-    if (chipType == ESP_STRIPPER_CHIP_WS2812B)
+    if ((chipType == ESP_STRIPPER_CHIP_WS2812B) ||
+        (chipType == ESP_STRIPPER_CHIP_WS2811))
     {
         uSizeNeeded = uNumPixels * WS2812B_BYTES_PER_PIXEL;
     }
@@ -532,16 +533,44 @@ static size_t calculate_pixel_buffer_size(uint16_t uNumPixels, esp_stripper_chip
 static void set_pixel_buffer_color(esp_stripper_controller_t* pController, uint16_t uPixelIdx, uint32_t colorRGBA)
 {
     size_t uBufIdx = uPixelIdx;
-    if (pController->uChipType == ESP_STRIPPER_CHIP_WS2812B)
+    if ((pController->uChipType == ESP_STRIPPER_CHIP_WS2812B) ||
+        (pController->uChipType == ESP_STRIPPER_CHIP_WS2811))
     {
         uBufIdx *= WS2812B_BYTES_PER_PIXEL;
-        pController->pPixelBuffer[uBufIdx] = (uint8_t)((colorRGBA >> 8) & 0xFF);
-        pController->pPixelBuffer[uBufIdx + 1] = (uint8_t)(colorRGBA & 0xFF);
-        pController->pPixelBuffer[uBufIdx + 2] = (uint8_t)((colorRGBA >> 16) & 0xFF);
+        if ((uBufIdx + 2) >= pController->uPixelBufferSize)
+        {
+            ESP_LOGW(TAG, "Buffer index out of bounds, idx=%u, bufSz=%u, chip=%u",
+                uBufIdx, pController->uPixelBufferSize, pController->uChipType);
+            return;
+        }
+
+        if (pController->uChipType == ESP_STRIPPER_CHIP_WS2812B)
+        {
+            pController->pPixelBuffer[uBufIdx] = (uint8_t)((colorRGBA >> 8) & 0xFF);        // Green
+            pController->pPixelBuffer[uBufIdx + 1] = (uint8_t)(colorRGBA & 0xFF);           // Red
+            pController->pPixelBuffer[uBufIdx + 2] = (uint8_t)((colorRGBA >> 16) & 0xFF);   // Blue
+        }
+        else if (pController->uChipType == ESP_STRIPPER_CHIP_WS2811)
+        {
+            pController->pPixelBuffer[uBufIdx] = (uint8_t)(colorRGBA & 0xFF);               // Red
+            pController->pPixelBuffer[uBufIdx + 1] = (uint8_t)((colorRGBA >> 8) & 0xFF);    // Green
+            pController->pPixelBuffer[uBufIdx + 2] = (uint8_t)((colorRGBA >> 16) & 0xFF);   // Blue
+        }
+        else
+        {
+            ESP_LOGE(TAG, "Should never reach here, chip=%u", pController->uChipType);
+            return;
+        }
     }
     else if (pController->uChipType == ESP_STRIPPER_CHIP_SK6812RGBW)
     {
         uBufIdx *= SK6812RGBW_BYTES_PER_PIXEL;
+        if ((uBufIdx + 3) >= pController->uPixelBufferSize)
+        {
+            ESP_LOGW(TAG, "Buffer index out of bounds, idx=%u, bufSz=%u, chip=%u",
+                uBufIdx, pController->uPixelBufferSize, pController->uChipType);
+            return;
+        }
 
         uint8_t r = 0;
         uint8_t g = 0;
