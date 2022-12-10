@@ -93,9 +93,9 @@
 
 typedef enum
 {
-    ESP_STRIPPER_ERR_OK = 0,
-    ESP_STRIPPER_ERR_NOT_INIT = -1,
-    ESP_STRIPPER_ERR_TX_OVERRUN = -2,
+    ESP_STRIPPER_ERR_OK = 0,                /*!< Success */
+    ESP_STRIPPER_ERR_NOT_INIT = -1,         /*!< esp_stripper_init has not been called yet */
+    ESP_STRIPPER_ERR_TX_OVERRUN = -2,       /*!< Pixel data transmission was aborted because it was taking longer than expected */
 } esp_stripper_err_t;
 
 /// @brief The LED strip types that are supported. Each type dictates the bit
