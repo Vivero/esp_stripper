@@ -1,4 +1,4 @@
-# esp_stripper
+# esp_stripper 🌈💃
 
 Put on a show with this LED strip driver!
 
