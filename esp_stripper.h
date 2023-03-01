@@ -105,6 +105,7 @@ typedef enum
     ESP_STRIPPER_CHIP_WS2812B = 0,
     ESP_STRIPPER_CHIP_WS2811,
     ESP_STRIPPER_CHIP_SK6812_GRBW,
+    ESP_STRIPPER_CHIP_SK6812_RGBW,
 } esp_stripper_chip_type_t;
 
 /// @brief Configuration for each LED strip controller.
