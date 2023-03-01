@@ -518,7 +518,7 @@ static size_t calculate_pixel_buffer_size(uint16_t uNumPixels, esp_stripper_chip
     {
         uSizeNeeded = uNumPixels * WS2812B_BYTES_PER_PIXEL;
     }
-    else if (chipType == ESP_STRIPPER_CHIP_SK6812RGBW)
+    else if (chipType == ESP_STRIPPER_CHIP_SK6812_GRBW)
     {
         uSizeNeeded = uNumPixels * SK6812RGBW_BYTES_PER_PIXEL;
     }
@@ -562,7 +562,7 @@ static void set_pixel_buffer_color(esp_stripper_controller_t* pController, uint1
             return;
         }
     }
-    else if (pController->uChipType == ESP_STRIPPER_CHIP_SK6812RGBW)
+    else if (pController->uChipType == ESP_STRIPPER_CHIP_SK6812_GRBW)
     {
         uBufIdx *= SK6812RGBW_BYTES_PER_PIXEL;
         if ((uBufIdx + 3) >= pController->uPixelBufferSize)
@@ -578,10 +578,10 @@ static void set_pixel_buffer_color(esp_stripper_controller_t* pController, uint1
         uint8_t w = 0;
         rgb32_to_rgbw(colorRGBA, &r, &g, &b, &w);
 
-        pController->pPixelBuffer[uBufIdx] = g;
-        pController->pPixelBuffer[uBufIdx + 1] = r;
-        pController->pPixelBuffer[uBufIdx + 2] = b;
-        pController->pPixelBuffer[uBufIdx + 3] = w;
+        pController->pPixelBuffer[uBufIdx] = g;         // Green
+        pController->pPixelBuffer[uBufIdx + 1] = r;     // Red
+        pController->pPixelBuffer[uBufIdx + 2] = b;     // Blue
+        pController->pPixelBuffer[uBufIdx + 3] = w;     // White
     }
 }
 
@@ -725,7 +725,7 @@ static void IRAM_ATTR fill_next(esp_stripper_controller_t* pController, bool bCh
     pController->uLastFillTimeClk = uCurrentTimeClk;
 
     // Pick an appropriate fill function for the LED type
-    if (pController->uChipType == ESP_STRIPPER_CHIP_SK6812RGBW)
+    if (pController->uChipType == ESP_STRIPPER_CHIP_SK6812_GRBW)
     {
         fill_next_SK6812RGBW(pController);
     }
